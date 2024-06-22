@@ -2,7 +2,6 @@ name: Terraform Code Analysis with SonarQube
 
 on: [workflow_dispatch, schedule]
   
-  
 
 jobs:
   sonarQubeAnalysis:
@@ -15,35 +14,32 @@ jobs:
       - name: Set up SonarQube Scanner
         shell: powershell
         run: |
-          $url = "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-windows.zip"
-          $output = "$env:TEMP\sonar-scanner.zip"
-          Invoke-WebRequest -Uri $url -OutFile $output
-          Expand-Archive -Path $output -DestinationPath $env:TEMP\sonar-scanner
-          $env:Path += ";$env:TEMP\sonar-scanner\sonar-scanner-4.7.0.2747-windows\bin"
+          Invoke-WebRequest -Uri https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-windows.zip -OutFile sonar-scanner.zip
+          Expand-Archive -Path sonar-scanner.zip -DestinationPath . -Force
+          $sonarScannerDir = "$PWD\sonar-scanner-4.7.0.2747-windows\bin"
+          [Environment]::SetEnvironmentVariable('PATH', $env:PATH + ";$sonarScannerDir", [EnvironmentVariableTarget]::Process)
+          $env:PATH += ";$sonarScannerDir"
 
       - name: SonarQube Scan
+        shell: powershell
         env:
           SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
-        shell: powershell
         run: |
-          sonar-scanner `
-          -Dsonar.projectKey=my_project_key `
+          .\sonar-scanner-4.7.0.2747-windows\bin\sonar-scanner.bat `
+          -Dsonar.projectKey=sonar.cpd.cross_project `
           -Dsonar.sources=. `
           -Dsonar.host.url=$env:SONAR_HOST_URL `
           -Dsonar.login=$env:SONAR_TOKEN
 
       - name: Terraform Format Check
         shell: powershell
-        run: |
-          terraform fmt -check
+        run: terraform fmt -check
 
       - name: Terraform Init
         shell: powershell
-        run: |
-          terraform init
+        run: terraform init
 
       - name: Terraform Validate
         shell: powershell
-        run: |
-          terraform validate
+        run: terraform validate
