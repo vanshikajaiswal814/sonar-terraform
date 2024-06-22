@@ -1,11 +1,41 @@
-name: Check Python Version
+name: Terraform Code Analysis with SonarQube
 
 on: [workflow_dispatch, schedule]
+  
 
 jobs:
-  check-python-version:
+  sonarQubeAnalysis:
     runs-on: self-hosted
+
     steps:
-      - name: Check Python Version
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up SonarQube Scanner
         run: |
-          python --version
+          curl -sSLo /usr/local/bin/sonar-scanner https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-linux.zip
+          unzip -o /usr/local/bin/sonar-scanner -d /usr/local/bin/
+          chmod +x /usr/local/bin/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner
+
+      - name: SonarQube Scan
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+        run: |
+          /usr/local/bin/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner \
+          -Dsonar.projectKey=my_project_key \
+          -Dsonar.sources=. \
+          -Dsonar.host.url=${{ secrets.SONARQUBE_HOST_URL }} \
+          -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
+
+      - name: Terraform Format Check
+        run: |
+          terraform fmt -check
+
+      - name: Terraform Init
+        run: |
+          terraform init
+
+      - name: Terraform Validate
+        run: |
+          terraform validate
