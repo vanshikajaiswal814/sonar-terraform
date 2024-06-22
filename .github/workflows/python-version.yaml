@@ -1,0 +1,11 @@
+name: Check Python Version
+
+on: [workflow_dispatch, schedule]
+
+jobs:
+  check-python-version:
+    runs-on: self-hosted
+    steps:
+      - name: Check Python Version
+        run: |
+          python --version
