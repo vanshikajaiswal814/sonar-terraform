@@ -10,16 +10,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set up JDK 17
+      - name: Set up Environment Variables
         shell: powershell
         run: |
-          # Download and install OpenJDK 17
-          Invoke-WebRequest -Uri https://download.java.net/openjdk/jdk17/ri/openjdk-17+35_windows-x64_bin.zip -OutFile openjdk-17.zip
-          Expand-Archive -Path openjdk-17.zip -DestinationPath $Env:TEMP
-          $jdkPath = Join-Path -Path $Env:TEMP -ChildPath "jdk-17"
-          [Environment]::SetEnvironmentVariable('JAVA_HOME', $jdkPath, [EnvironmentVariableTarget]::Process)
-          $env:JAVA_HOME = $jdkPath
-          $env:PATH += ";$jdkPath\bin"
+          # Assuming Java 21 is installed in C:\Program Files\Java\jdk-21.0.2
+          $javaPath = "C:\Program Files\Java\jdk-21.0.2"
+          [Environment]::SetEnvironmentVariable('JAVA_HOME', $javaPath, [EnvironmentVariableTarget]::Process)
+          $env:JAVA_HOME = $javaPath
+          $env:PATH += ";$javaPath\bin"
+          Write-Output "JAVA_HOME set to: $env:JAVA_HOME"
+          Write-Output "PATH updated to include: $javaPath\bin"
 
       - name: Verify Java Version
         shell: powershell
@@ -33,6 +33,7 @@ jobs:
           $sonarScannerDir = "$PWD\sonar-scanner-4.7.0.2747-windows\bin"
           [Environment]::SetEnvironmentVariable('PATH', $env:PATH + ";$sonarScannerDir", [EnvironmentVariableTarget]::Process)
           $env:PATH += ";$sonarScannerDir"
+          Write-Output "SonarQube Scanner directory added to PATH: $sonarScannerDir"
 
       - name: SonarQube Scan
         shell: powershell
