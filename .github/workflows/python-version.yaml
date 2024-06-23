@@ -10,21 +10,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set up Environment Variables
-        shell: powershell
-        run: |
-          # Assuming Java 21 is installed in C:\Program Files\Java\jdk-21.0.2
-          $javaPath = "C:\Program Files\Java\jdk-21.0.2"
-          [Environment]::SetEnvironmentVariable('JAVA_HOME', $javaPath, [EnvironmentVariableTarget]::Process)
-          $env:JAVA_HOME = $javaPath
-          $env:PATH += ";$javaPath\bin"
-          Write-Output "JAVA_HOME set to: $env:JAVA_HOME"
-          Write-Output "PATH updated to include: $javaPath\bin"
-
-      - name: Verify Java Version
-        shell: powershell
-        run: java -version
-
       - name: Set up SonarQube Scanner
         shell: powershell
         run: |
@@ -33,7 +18,10 @@ jobs:
           $sonarScannerDir = "$PWD\sonar-scanner-4.7.0.2747-windows\bin"
           [Environment]::SetEnvironmentVariable('PATH', $env:PATH + ";$sonarScannerDir", [EnvironmentVariableTarget]::Process)
           $env:PATH += ";$sonarScannerDir"
-          Write-Output "SonarQube Scanner directory added to PATH: $sonarScannerDir"
+
+      - name: Verify Java Version
+        shell: powershell
+        run: java -version
 
       - name: SonarQube Scan
         shell: powershell
@@ -41,7 +29,11 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
         run: |
-          & sonar-scanner-4.7.0.2747-windows\bin\sonar-scanner.bat -D"sonar.projectKey=sonar.cpd.cross_project" -D"sonar.sources=." -D"sonar.host.url=$env:SONAR_HOST_URL" -D"sonar.login=$env:SONAR_TOKEN"
+          & sonar-scanner-4.7.0.2747-windows\bin\sonar-scanner.bat `
+          -Dsonar.projectKey=sonar.cpd.cross_project `
+          -Dsonar.sources=. `
+          -Dsonar.host.url=$env:SONAR_HOST_URL `
+          -Dsonar.login=$env:SONAR_TOKEN
 
       - name: Terraform Format Check
         shell: powershell
