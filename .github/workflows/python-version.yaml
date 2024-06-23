@@ -5,8 +5,12 @@ on: [workflow_dispatch, schedule]
 jobs:
   sonarQubeAnalysis:
     runs-on: self-hosted
-
     steps:
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '21.0.2'
+
       - name: Checkout Repository
         uses: actions/checkout@v3
 
@@ -19,21 +23,13 @@ jobs:
           [Environment]::SetEnvironmentVariable('PATH', $env:PATH + ";$sonarScannerDir", [EnvironmentVariableTarget]::Process)
           $env:PATH += ";$sonarScannerDir"
 
-      - name: Verify Java Version
-        shell: powershell
-        run: java -version
-
       - name: SonarQube Scan
         shell: powershell
         env:
           SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
         run: |
-          & sonar-scanner-4.7.0.2747-windows\bin\sonar-scanner.bat `
-          -Dsonar.projectKey=sonar.cpd.cross_project `
-          -Dsonar.sources=. `
-          -Dsonar.host.url=$env:SONAR_HOST_URL `
-          -Dsonar.login=$env:SONAR_TOKEN
+          sonar-scanner-4.7.0.2747-windows\bin\sonar-scanner.bat -D"sonar.projectKey=sonar.cpd.cross_project" -D"sonar.sources=." -D"sonar.host.url=$env:SONAR_HOST_URL" -D"sonar.login=$env:SONAR_TOKEN"
 
       - name: Terraform Format Check
         shell: powershell
