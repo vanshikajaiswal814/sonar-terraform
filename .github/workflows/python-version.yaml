@@ -27,7 +27,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
         run: |
-          C:\Users\FVS3KOR\Downloads\sonar-scanner-cli-4.7.0.2747-windows\sonar-scanner-4.7.0.2747-windows\bin\sonar-scanner.bat -X -D"sonar.projectKey=sonar.cpd.cross_project" -D"sonar.sources=." -D"sonar.host.url=$env:SONAR_HOST_URL" -D"sonar.login=$env:SONAR_TOKEN"
+           C:\Users\FVS3KOR\Downloads\sonar-scanner-cli-6.0.0.4432-windows\sonar-scanner-6.0.0.4432-windows\bin\sonar-scanner.bat -D"sonar.projectKey=sonar.cpd.cross_project" -D"sonar.sources=." -D"sonar.host.url=$env:SONAR_HOST_URL" -D"sonar.login=$env:SONAR_TOKEN"
 
       - name: Terraform Format Check
         shell: powershell
