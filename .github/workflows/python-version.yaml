@@ -1,28 +1,24 @@
 name: Terraform Code Analysis with SonarQube
 
 on: [workflow_dispatch, schedule]
+  
 
 jobs:
   sonarQubeAnalysis:
     runs-on: self-hosted
+
     steps:
       - name: Set up Java
         uses: actions/setup-java@v2
         with:
           java-version: '21.0.2'
-          distribution: 'adopt'
 
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set up SonarQube Scanner
+      - name: Verify Java Version
         shell: powershell
-        run: |
-          Invoke-WebRequest -Uri https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-windows.zip -OutFile sonar-scanner.zip
-          Expand-Archive -Path sonar-scanner.zip -DestinationPath . -Force
-          $sonarScannerDir = "$PWD\sonar-scanner-4.7.0.2747-windows\bin"
-          [Environment]::SetEnvironmentVariable('PATH', $env:PATH + ";$sonarScannerDir", [EnvironmentVariableTarget]::Process)
-          $env:PATH += ";$sonarScannerDir"
+        run: java -version
 
       - name: SonarQube Scan
         shell: powershell
@@ -30,7 +26,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
         run: |
-          sonar-scanner-4.7.0.2747-windows\bin\sonar-scanner.bat -D"sonar.projectKey=sonar.cpd.cross_project" -D"sonar.sources=." -D"sonar.host.url=$env:SONAR_HOST_URL" -D"sonar.login=$env:SONAR_TOKEN"
+          sonar-scanner.bat -D"sonar.projectKey=sonar.cpd.cross_project" -D"sonar.sources=." -D"sonar.host.url=$env:SONAR_HOST_URL" -D"sonar.login=$env:SONAR_TOKEN"
 
       - name: Terraform Format Check
         shell: powershell
