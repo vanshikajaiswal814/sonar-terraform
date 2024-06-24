@@ -12,6 +12,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '21.0.2'
+          distribution: 'adopt'
 
       - name: Checkout Repository
         uses: actions/checkout@v3
