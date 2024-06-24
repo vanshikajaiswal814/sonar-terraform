@@ -1,16 +1,27 @@
-name: Check SonarQube Server Accessibility
+name: Build
 
-on: push
+on:
+  push:
+    branches:
+      - main
+
 
 jobs:
-  checkSonarQube:
+  build:
+    name: Build and analyze
     runs-on: self-hosted
-
+    
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Check SonarQube Server Accessibility
-        shell: cmd
-        run: |
-          curl http://localhost:30000
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      # If you wish to fail your job when the Quality Gate is red, uncomment the
+      # following lines. This would typically be used to fail a deployment.
+      # - uses: sonarsource/sonarqube-quality-gate-action@master
+      #   timeout-minutes: 5
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
