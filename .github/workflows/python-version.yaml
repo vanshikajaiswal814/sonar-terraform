@@ -1,6 +1,6 @@
 name: Terraform Code Analysis with SonarQube
 
-on: [workflow_dispatch, schedule]
+on: push
   
 
 jobs:
