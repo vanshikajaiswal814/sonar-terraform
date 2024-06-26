@@ -17,13 +17,12 @@ jobs:
       - name: SonarQube Scan
         shell: powershell
         env:
-          SONAR_HOST_URL: http://localhost:30000  # Update the URL directly here
+          SONAR_HOST_URL: http://localhost:30000
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
         run: |
-          $env:SONAR_SCANNER_OPTS="-Dhttp.proxyHost=localhost -Dhttp.proxyPort=3128 -Dhttps.proxyHost=localhost -Dhttps.proxyPort=3128 -Dhttp.nonProxyHosts='localhost|127.0.0.1|.bosch.com|kubernetes.docker.internal|.bosch-iot-cloud.com' -Dhttps.nonProxyHosts='localhost|127.0.0.1|.bosch.com|kubernetes.docker.internal|.bosch-iot-cloud.com'"
-          C:\Users\FVS3KOR\Downloads\sonar-scanner-cli-6.0.0.4432-windows\sonar-scanner-6.0.0.4432-windows\bin\sonar-scanner.bat -D"sonar.projectKey=sonar-terraform" -D"sonar.sources=." -D"sonar.host.url=$env:SONAR_HOST_URL" -D"sonar.login=$env:SONAR_TOKEN"
+          $env:SONAR_SCANNER_OPTS = '-Dhttp.proxyHost=localhost -Dhttp.proxyPort=3128 -Dhttps.proxyHost=localhost -Dhttps.proxyPort=3128 -Dhttp.nonProxyHosts="localhost|127.0.0.1|.bosch.com|kubernetes.docker.internal|.bosch-iot-cloud.com" -Dhttps.nonProxyHosts="localhost|127.0.0.1|.bosch.com|kubernetes.docker.internal|.bosch-iot-cloud.com"'
+          & 'C:\Users\FVS3KOR\Downloads\sonar-scanner-cli-6.0.0.4432-windows\sonar-scanner-6.0.0.4432-windows\bin\sonar-scanner.bat' -Dsonar.projectKey=sonar-terraform -Dsonar.sources=. -Dsonar.host.url=$env:SONAR_HOST_URL -Dsonar.login=$env:SONAR_TOKEN
 
       - name: Terraform Format Check
         shell: powershell
         run: terraform fmt -check
-
