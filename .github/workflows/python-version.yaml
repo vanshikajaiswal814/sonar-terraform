@@ -1,19 +1,12 @@
 name: Terraform Code Analysis with SonarQube
 
 on: push
-  
 
 jobs:
   sonarQubeAnalysis:
     runs-on: self-hosted
 
     steps:
-      # - name: Set up Java
-      #   uses: actions/setup-java@v2
-      #   with:
-      #     java-version: '21.0.2'
-      #     distribution: 'adopt'
-
       - name: Checkout Repository
         uses: actions/checkout@v3
 
@@ -24,15 +17,13 @@ jobs:
       - name: SonarQube Scan
         shell: powershell
         env:
-          SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
+          SONAR_HOST_URL: http://localhost:30000  # Update the URL directly here
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
         run: |
-           C:\Users\FVS3KOR\Downloads\sonar-scanner-cli-6.0.0.4432-windows\sonar-scanner-6.0.0.4432-windows\bin\sonar-scanner.bat -D"sonar.projectKey=sonar-terraform" -D"sonar.sources=." -D"sonar.host.url=$env:SONAR_HOST_URL" -D"sonar.login=$env:SONAR_TOKEN"
+          $env:SONAR_SCANNER_OPTS="-Dhttp.proxyHost=localhost -Dhttp.proxyPort=3128 -Dhttps.proxyHost=localhost -Dhttps.proxyPort=3128 -Dhttp.nonProxyHosts='localhost|127.0.0.1|.bosch.com|kubernetes.docker.internal|.bosch-iot-cloud.com' -Dhttps.nonProxyHosts='localhost|127.0.0.1|.bosch.com|kubernetes.docker.internal|.bosch-iot-cloud.com'"
+          C:\Users\FVS3KOR\Downloads\sonar-scanner-cli-6.0.0.4432-windows\sonar-scanner-6.0.0.4432-windows\bin\sonar-scanner.bat -D"sonar.projectKey=sonar-terraform" -D"sonar.sources=." -D"sonar.host.url=$env:SONAR_HOST_URL" -D"sonar.login=$env:SONAR_TOKEN"
 
       - name: Terraform Format Check
         shell: powershell
         run: terraform fmt -check
 
-      
-
-      
