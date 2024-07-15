@@ -1,30 +1,27 @@
-name: Terraform Code Analysis with SonarQube
+name: Build
 
-on: push
+on:
+  push:
+    branches:
+      - main
+
 
 jobs:
-  sonarQubeAnalysis:
-    runs-on: self-hosted
-
+  build:
+    name: Build and analyze
+    runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Verify Java Version
-        shell: powershell
-        run: java -version
-
-      - name: SonarQube Scan
-        shell: powershell
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - uses: sonarsource/sonarqube-scan-action@master
         env:
-          SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
-
-          SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
-        run: |
-          $env:SONAR_SCANNER_OPTS = '-Dhttp.proxyHost=localhost -Dhttp.proxyPort=3128 -Dhttps.proxyHost=localhost -Dhttps.proxyPort=3128 -Dhttp.nonProxyHosts="localhost|127.0.0.1|.bosch.com|kubernetes.docker.internal|.bosch-iot-cloud.com" -Dhttps.nonProxyHosts="localhost|127.0.0.1|.bosch.com|kubernetes.docker.internal|.bosch-iot-cloud.com"'
-          & 'C:\Users\FVS3KOR\Downloads\sonar-scanner-cli-6.0.0.4432-windows\sonar-scanner-6.0.0.4432-windows\bin\sonar-scanner.bat' -D"sonar.projectKey=sonar-terraform" -D"sonar.sources=../../sonar-terraform" -D"sonar.host.url=$env:SONAR_HOST_URL" -D"sonar.token=$env:SONAR_TOKEN"
-
-
-      - name: Terraform Format Check
-        shell: powershell
-        run: terraform fmt -check
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      # If you wish to fail your job when the Quality Gate is red, uncomment the
+      # following lines. This would typically be used to fail a deployment.
+      # - uses: sonarsource/sonarqube-quality-gate-action@master
+      #   timeout-minutes: 5
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
