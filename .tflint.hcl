@@ -1,7 +1,3 @@
-config {
-  min_tf_version = "0.12"
-}
-
-plugin "aws" {
+plugin "azurerm" {
   enabled = true
 }
