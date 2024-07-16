@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-  
 
 jobs:
   terraform-static-analysis:
@@ -15,14 +14,28 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Ensure .tflint.hcl is available
+        run: |
+          if [ ! -f .tflint.hcl ]; then
+            echo 'Creating a default .tflint.hcl file'
+            echo 'plugin "azurerm" { enabled = true }' > .tflint.hcl
+          fi
+
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.0
 
+      - name: Initialize Terraform
+        run: terraform init
+
       - name: Install TFLint
         run: |
           curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+
+      - name: Install TFLint Azure Plugin
+        run: |
+          tflint --init
 
       - name: Run TFLint
         run: tflint --config .tflint.hcl
@@ -37,7 +50,7 @@ jobs:
       - name: Install tfscanner
         run: |
           curl -sSL https://raw.githubusercontent.com/cloudrail/cloudrail-cli/main/install.sh | bash
-          
+
       - name: Run tfscanner
         run: cloudrail run --auto-approve --tf-plan plan.out
 
@@ -64,3 +77,4 @@ jobs:
         with:
           name: tfscanner-report
           path: tfscanner-results.json
+
