@@ -1,0 +1,68 @@
+name: Terraform Static Analysis
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform-static-analysis:
+    name: Terraform Static Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+
+      - name: Install TFLint
+        run: |
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+
+      - name: Run TFLint
+        run: tflint --config .tflint.hcl
+
+      - name: Install tfsec
+        run: |
+          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+
+      - name: Run tfsec
+        run: tfsec .
+
+      - name: Install tfscanner
+        run: |
+          curl -sSL https://raw.githubusercontent.com/cloudrail/cloudrail-cli/main/install.sh | bash
+          
+      - name: Run tfscanner
+        run: cloudrail run --auto-approve --tf-plan plan.out
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan -out=plan.out
+
+      - name: Archive Plan
+        uses: actions/upload-artifact@v3
+        with:
+          name: plan.out
+          path: plan.out
+
+      - name: Archive tfsec report
+        uses: actions/upload-artifact@v3
+        with:
+          name: tfsec-report
+          path: tfsec-results.json
+
+      - name: Archive tfscanner report
+        uses: actions/upload-artifact@v3
+        with:
+          name: tfscanner-report
+          path: tfscanner-results.json
