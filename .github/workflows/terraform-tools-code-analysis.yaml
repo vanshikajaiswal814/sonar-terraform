@@ -48,7 +48,7 @@ jobs:
           -Dsonar.sources=. \
           -Dsonar.host.url=$SONAR_HOST_URL \
           -Dsonar.login=$SONAR_TOKEN \
-          -Dsonar.externalIssuesReportPaths=tflint_report.json,trivy_report.sarif
+          -Dsonar.externalIssuesReportPaths=trivy_report.sarif
 
       # If you wish to fail your job when the Quality Gate is red, uncomment the
       # following lines. This would typically be used to fail a deployment.
