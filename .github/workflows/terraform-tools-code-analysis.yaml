@@ -25,7 +25,13 @@ jobs:
 
       - name: Run tflint
         run: |
-          tflint --format json > tflint_report.json
+          tflint --format json > tflint_report.json || (cat tflint_report.json && exit 1)
+
+      - name: Debug tflint
+        if: failure()
+        run: |
+          echo "tflint failed, showing debug information"
+          cat tflint_report.json
 
       - name: Install tfsec
         run: |
@@ -48,7 +54,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
         run: |
           sonar-scanner \
-          -Dsonar.projectKey=sonar-terraform2 \
+          -Dsonar.projectKey=sonar-terraform \
           
           -Dsonar.sources=. \
           -Dsonar.host.url=$SONAR_HOST_URL \
