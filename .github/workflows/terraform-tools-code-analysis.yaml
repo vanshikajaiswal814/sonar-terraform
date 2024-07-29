@@ -36,15 +36,14 @@ jobs:
          
           curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.1.0.4477-linux-x64.zip
           unzip sonar-scanner.zip -d $HOME
-          echo "Adding SonarScanner to PATH..."
-          echo "$HOME/sonar-scanner-6.1.0.4477-linux-x64/bin" >> $GITHUB_ENV
+          export  PATH "$HOME/sonar-scanner-6.1.0.4477-linux-x64/bin"
 
       - name: Run SonarQube scan
         env:
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
         run: |
-          sonar-scanner \
+          $HOME/sonar-scanner-6.1.0.4477-linux-x64/bin/sonar-scanner \
           -Dsonar.projectKey=sonar-terraform2 \
           -Dsonar.sources=. \
           -Dsonar.host.url=$SONAR_HOST_URL \
