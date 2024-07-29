@@ -1,27 +1,17 @@
-plugin "aws" {
-  enabled = true
-}
+# General configuration
+module = true
+force = false
+disabled_by_default = false
+varfile = ["example1.tfvars", "example2.tfvars"]
 
+# Plugin configuration for Azure
 plugin "azurerm" {
   enabled = true
+  version = "0.2.1"  # Use the appropriate version for your setup
+  source = "github.com/terraform-linters/tflint-ruleset-azurerm"
 }
 
-plugin "google" {
-  enabled = true
-}
-
-# Add any other necessary plugins here
-
-config {
-  # Enable the built-in rules you need
-  enable_rule = [
-    "aws_instance_invalid_type",
-    "azurerm_resource_group_name",
-    "google_compute_instance_invalid_type",
-  ]
-
-  # Optionally, disable specific rules
-  disable_rule = [
-    "aws_instance_default_type"
-  ]
+# Rule configuration for Azure
+rule "azurerm_resource_group_location" {
+  enabled = false
 }
