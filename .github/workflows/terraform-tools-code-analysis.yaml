@@ -33,10 +33,10 @@ jobs:
 
       - name: Install SonarScanner
         run: |
-          SONAR_SCANNER_VERSION=$(curl -s https://api.github.com/repos/SonarSource/sonar-scanner-cli/releases/latest | grep 'tag_name' | cut -d\" -f4)
-          curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux.zip
+         
+          curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.1.0.4477-linux-x64.zip
           unzip sonar-scanner.zip -d $HOME
-          export PATH=$HOME/sonar-scanner-${SONAR_SCANNER_VERSION}-linux/bin:$PATH
+          export PATH=$HOME/sonar-scanner-6.1.0.4477-linux-x64/bin:$PATH
 
       - name: Run SonarQube scan
         env:
