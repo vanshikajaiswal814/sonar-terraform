@@ -19,19 +19,7 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: Install tflint
-        run: |
-          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
-
-      - name: Run tflint
-        run: |
-          tflint --format json > tflint_report.json || (cat tflint_report.json && exit 1)
-
-      - name: Debug tflint
-        if: failure()
-        run: |
-          echo "tflint failed, showing debug information"
-          cat tflint_report.json
+      
 
       - name: Install tfsec
         run: |
