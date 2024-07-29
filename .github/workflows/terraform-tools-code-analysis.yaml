@@ -8,26 +8,28 @@ on:
     branches:
       - main
 
+env:
+  TRIVY_VERSION: 0.53.0
+
 jobs:
   build:
     name: Build and analyze
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
 
-      
-
-      - name: Install tfsec
+      - name: Install Trivy
         run: |
-          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v${{ env.TRIVY_VERSION }}
+          trivy --version
 
-      - name: Run tfsec
+      - name: Run Trivy scan
         run: |
-          tfsec --format sarif --out tfsec_report.sarif
+          trivy config . --format sarif --output trivy_report.sarif
 
       - name: Install SonarScanner
         run: |
@@ -42,12 +44,11 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
         run: |
           sonar-scanner \
-          -Dsonar.projectKey=sonar-terraform \
-          
+          -Dsonar.projectKey=sonar-terraform2 \
           -Dsonar.sources=. \
           -Dsonar.host.url=$SONAR_HOST_URL \
           -Dsonar.login=$SONAR_TOKEN \
-          -Dsonar.externalIssuesReportPaths=tflint_report.json,tfsec_report.sarif
+          -Dsonar.externalIssuesReportPaths=tflint_report.json,trivy_report.sarif
 
       # If you wish to fail your job when the Quality Gate is red, uncomment the
       # following lines. This would typically be used to fail a deployment.
