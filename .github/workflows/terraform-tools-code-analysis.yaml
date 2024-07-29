@@ -1,80 +1,64 @@
-name: Terraform Static Analysis
+name: Build
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  terraform-static-analysis:
-    name: Terraform Static Analysis
+  build:
+    name: Build and analyze
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Ensure .tflint.hcl is available
-        run: |
-          if [ ! -f .tflint.hcl ]; then
-            echo 'Creating a default .tflint.hcl file'
-            echo 'plugin "azurerm" { enabled = true }' > .tflint.hcl
-          fi
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          terraform_version: 1.5.0
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: Initialize Terraform
-        run: terraform init
-
-      - name: Install TFLint
+      - name: Install tflint
         run: |
           curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 
-      - name: Install TFLint Azure Plugin
+      - name: Run tflint
         run: |
-          tflint --init
-
-      - name: Run TFLint
-        run: tflint --config .tflint.hcl
+          tflint --format json > tflint_report.json
 
       - name: Install tfsec
         run: |
-          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install.sh | bash
 
       - name: Run tfsec
-        run: tfsec .
-
-      - name: Install tfscanner
         run: |
-          curl -sSL https://raw.githubusercontent.com/cloudrail/cloudrail-cli/main/install.sh | bash
+          tfsec --format sarif --out tfsec_report.sarif
 
-      - name: Run tfscanner
-        run: cloudrail run --auto-approve --tf-plan plan.out
+      - name: Install SonarScanner
+        run: |
+          SONAR_SCANNER_VERSION=$(curl -s https://api.github.com/repos/SonarSource/sonar-scanner-cli/releases/latest | grep 'tag_name' | cut -d\" -f4)
+          curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux.zip
+          unzip sonar-scanner.zip -d $HOME
+          export PATH=$HOME/sonar-scanner-${SONAR_SCANNER_VERSION}-linux/bin:$PATH
 
-      - name: Terraform Init
-        run: terraform init
+      - name: Run SonarQube scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
+        run: |
+          sonar-scanner \
+          -Dsonar.projectKey=sonar-terraform2 \
+          
+          -Dsonar.sources=. \
+          -Dsonar.host.url=$SONAR_HOST_URL \
+          -Dsonar.login=$SONAR_TOKEN \
+          -Dsonar.externalIssuesReportPaths=tflint_report.json,tfsec_report.sarif
 
-      - name: Terraform Plan
-        run: terraform plan -out=plan.out
-
-      - name: Archive Plan
-        uses: actions/upload-artifact@v3
-        with:
-          name: plan.out
-          path: plan.out
-
-      - name: Archive tfsec report
-        uses: actions/upload-artifact@v3
-        with:
-          name: tfsec-report
-          path: tfsec-results.json
-
-      - name: Archive tfscanner report
-        uses: actions/upload-artifact@v3
-        with:
-          name: tfscanner-report
-          path: tfscanner-results.json
-
+      # If you wish to fail your job when the Quality Gate is red, uncomment the
+      # following lines. This would typically be used to fail a deployment.
+      # - name: Quality Gate check
+      #   uses: sonarsource/sonarqube-quality-gate-action@master
+      #   timeout-minutes: 5
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
