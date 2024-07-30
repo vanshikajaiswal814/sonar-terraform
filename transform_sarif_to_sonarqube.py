@@ -1,100 +1,57 @@
 import json
-import os
 
-def transform_sarif_to_sonarqube(sarif_report_path, sonarqube_output_path):
-    with open(sarif_report_path, 'r') as file:
-        sarif_data = json.load(file)
+def transform_sarif_to_sonarqube(sarif_report):
+    sonarqube_report = {
+        "issues": []
+    }
 
-    sonarqube_issues = []
-    for run in sarif_data['runs']:
-        tool_name = run['tool']['driver']['name']
-        tool_version = run['tool']['driver']['version']
-        for result in run['results']:
-            rule_id = result['ruleId']
-            level = result['level']
-            message = result['message']['text']
-            for location in result['locations']:
-                artifact_location = location['physicalLocation']['artifactLocation']['uri']
-                start_line = location['physicalLocation']['region']['startLine']
+    for run in sarif_report.get("runs", []):
+        tool_name = run.get("tool", {}).get("driver", {}).get("name", "Unknown Tool")
+        tool_version = run.get("tool", {}).get("driver", {}).get("version", "Unknown Version")
+        for result in run.get("results", []):
+            rule_id = result.get("ruleId", "Unknown Rule")
+            rule_index = result.get("ruleIndex", 0)
+            level = result.get("level", "warning").upper()
+            message = result.get("message", {}).get("text", "")
+            for location in result.get("locations", []):
+                physical_location = location.get("physicalLocation", {})
+                artifact_location = physical_location.get("artifactLocation", {})
+                uri = artifact_location.get("uri", "")
+                region = physical_location.get("region", {})
+                start_line = region.get("startLine", 0)
+                end_line = region.get("endLine", start_line)
+                start_column = region.get("startColumn", 0)
+                end_column = region.get("endColumn", start_column)
+                
                 issue = {
-                    'engineId': tool_name,
-                    'ruleId': rule_id,
-                    'severity': level,
-                    'type': 'VULNERABILITY',
-                    'primaryLocation': {
-                        'message': message,
-                        'filePath': artifact_location,
-                        'textRange': {
-                            'startLine': start_line,
-                            'endLine': start_line
+                    "engineId": tool_name,
+                    "ruleId": rule_id,
+                    "severity": level,
+                    "type": "VULNERABILITY",
+                    "primaryLocation": {
+                        "message": message,
+                        "filePath": uri,
+                        "textRange": {
+                            "startLine": start_line,
+                            "endLine": end_line,
+                            "startColumn": start_column,
+                            "endColumn": end_column
                         }
                     }
                 }
-                sonarqube_issues.append(issue)
+                sonarqube_report["issues"].append(issue)
 
-    sonarqube_report = {
-        'issues': sonarqube_issues
-    }
+    return sonarqube_report
 
-    with open(sonarqube_output_path, 'w') as outfile:
-        json.dump(sonarqube_report, outfile, indent=4)
+# Load the SARIF report
+with open('trivy_report.sarif', 'r') as file:
+    sarif_report = json.load(file)
 
-if __name__ == "__main__":
-    sarif_report_path = "trivy_report.sarif"  # Input SARIF file path
-    sonarqube_output_path = "sonarqube_report.json"  # Output SonarQube file path
+# Transform the SARIF report to SonarQube format
+sonarqube_report = transform_sarif_to_sonarqube(sarif_report)
 
-    if os.path.exists(sarif_report_path):
-        transform_sarif_to_sonarqube(sarif_report_path, sonarqube_output_path)
-        print(f"SonarQube report generated: {sonarqube_output_path}")
-    else:
-        print(f"Error: SARIF report not found at {sarif_report_path}")
-import json
-import os
+# Save the SonarQube report
+with open('trivy_report_sonarqube.json', 'w') as file:
+    json.dump(sonarqube_report, file, indent=4)
 
-def transform_sarif_to_sonarqube(sarif_report_path, sonarqube_output_path):
-    with open(sarif_report_path, 'r') as file:
-        sarif_data = json.load(file)
-
-    sonarqube_issues = []
-    for run in sarif_data['runs']:
-        tool_name = run['tool']['driver']['name']
-        tool_version = run['tool']['driver']['version']
-        for result in run['results']:
-            rule_id = result['ruleId']
-            level = result['level']
-            message = result['message']['text']
-            for location in result['locations']:
-                artifact_location = location['physicalLocation']['artifactLocation']['uri']
-                start_line = location['physicalLocation']['region']['startLine']
-                issue = {
-                    'engineId': tool_name,
-                    'ruleId': rule_id,
-                    'severity': level,
-                    'type': 'VULNERABILITY',
-                    'primaryLocation': {
-                        'message': message,
-                        'filePath': artifact_location,
-                        'textRange': {
-                            'startLine': start_line,
-                            'endLine': start_line
-                        }
-                    }
-                }
-                sonarqube_issues.append(issue)
-
-    sonarqube_report = {
-        'issues': sonarqube_issues
-    }
-
-    with open(sonarqube_output_path, 'w') as outfile:
-        json.dump(sonarqube_report, outfile, indent=4)
-
-if __name__ == "__main__":
-    sarif_report_path = "trivy_report.sarif"  # Input SARIF file path
-    sonarqube_output_path = "sonarqube_report.json"  # Output SonarQube file path
-
-    if os.path.exists(sarif_report_path):
-        transform_sarif_to_sonarqube(sarif_report_path, sonarqube_output_path)
-        print(f"SonarQube report generated: {sonarqube_output_path}")
-    else:
-        print(f"Error: SARIF report not found at {sarif_report_path}")
+print("Transformation complete. The SonarQube report has been saved as 'trivy_report_sonarqube.json'.")
