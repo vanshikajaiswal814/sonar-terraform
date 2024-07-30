@@ -31,6 +31,13 @@ jobs:
         run: |
           trivy config . --format sarif --output trivy_report.sarif
 
+      - name: Install Python
+        run: sudo apt-get install -y python3 python3-pip
+
+      - name: Transform SARIF Report
+        run: |
+          python3 transform_sarif_to_sonarqube.py
+
       - name: Install SonarScanner
         run: |
          
