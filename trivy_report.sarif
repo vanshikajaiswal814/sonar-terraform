@@ -1,0 +1,378 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "fullName": "Trivy Vulnerability Scanner",
+          "informationUri": "https://github.com/aquasecurity/trivy",
+          "name": "Trivy",
+          "rules": [
+            {
+              "id": "AVD-AWS-0102",
+              "name": "Misconfiguration",
+              "shortDescription": {
+                "text": "An Network ACL rule allows ALL ports."
+              },
+              "fullDescription": {
+                "text": "Ensure access to specific required ports is allowed, and nothing else."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://avd.aquasec.com/misconfig/avd-aws-0102",
+              "help": {
+                "text": "Misconfiguration AVD-AWS-0102\nType: Terraform Security Check\nSeverity: CRITICAL\nCheck: An Network ACL rule allows ALL ports.\nMessage: Network ACL rule allows access using ALL ports.\nLink: [AVD-AWS-0102](https://avd.aquasec.com/misconfig/avd-aws-0102)\nEnsure access to specific required ports is allowed, and nothing else.",
+                "markdown": "**Misconfiguration AVD-AWS-0102**\n| Type | Severity | Check | Message | Link |\n| --- | --- | --- | --- | --- |\n|Terraform Security Check|CRITICAL|An Network ACL rule allows ALL ports.|Network ACL rule allows access using ALL ports.|[AVD-AWS-0102](https://avd.aquasec.com/misconfig/avd-aws-0102)|\n\nEnsure access to specific required ports is allowed, and nothing else."
+              },
+              "properties": {
+                "precision": "very-high",
+                "security-severity": "9.5",
+                "tags": [
+                  "misconfiguration",
+                  "security",
+                  "CRITICAL"
+                ]
+              }
+            },
+            {
+              "id": "AVD-AWS-0105",
+              "name": "Misconfiguration",
+              "shortDescription": {
+                "text": "An ingress Network ACL rule allows specific ports from /0."
+              },
+              "fullDescription": {
+                "text": "Opening up ACLs to the public internet is potentially dangerous. You should restrict access to IP addresses or ranges that explicitly require it where possible."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://avd.aquasec.com/misconfig/avd-aws-0105",
+              "help": {
+                "text": "Misconfiguration AVD-AWS-0105\nType: Terraform Security Check\nSeverity: CRITICAL\nCheck: An ingress Network ACL rule allows specific ports from /0.\nMessage: Network ACL rule allows ingress from public internet.\nLink: [AVD-AWS-0105](https://avd.aquasec.com/misconfig/avd-aws-0105)\nOpening up ACLs to the public internet is potentially dangerous. You should restrict access to IP addresses or ranges that explicitly require it where possible.",
+                "markdown": "**Misconfiguration AVD-AWS-0105**\n| Type | Severity | Check | Message | Link |\n| --- | --- | --- | --- | --- |\n|Terraform Security Check|CRITICAL|An ingress Network ACL rule allows specific ports from /0.|Network ACL rule allows ingress from public internet.|[AVD-AWS-0105](https://avd.aquasec.com/misconfig/avd-aws-0105)|\n\nOpening up ACLs to the public internet is potentially dangerous. You should restrict access to IP addresses or ranges that explicitly require it where possible."
+              },
+              "properties": {
+                "precision": "very-high",
+                "security-severity": "9.5",
+                "tags": [
+                  "misconfiguration",
+                  "security",
+                  "CRITICAL"
+                ]
+              }
+            },
+            {
+              "id": "AVD-AWS-0178",
+              "name": "Misconfiguration",
+              "shortDescription": {
+                "text": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you\u0026#39;ve created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \u0026#34;Rejects\u0026#34; for VPCs."
+              },
+              "fullDescription": {
+                "text": "VPC Flow Logs provide visibility into network traffic that traverses the VPC and can be used to detect anomalous traffic or insight during security workflows."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "helpUri": "https://avd.aquasec.com/misconfig/avd-aws-0178",
+              "help": {
+                "text": "Misconfiguration AVD-AWS-0178\nType: Terraform Security Check\nSeverity: MEDIUM\nCheck: VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.\nMessage: VPC Flow Logs is not enabled for VPC\nLink: [AVD-AWS-0178](https://avd.aquasec.com/misconfig/avd-aws-0178)\nVPC Flow Logs provide visibility into network traffic that traverses the VPC and can be used to detect anomalous traffic or insight during security workflows.",
+                "markdown": "**Misconfiguration AVD-AWS-0178**\n| Type | Severity | Check | Message | Link |\n| --- | --- | --- | --- | --- |\n|Terraform Security Check|MEDIUM|VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.|VPC Flow Logs is not enabled for VPC|[AVD-AWS-0178](https://avd.aquasec.com/misconfig/avd-aws-0178)|\n\nVPC Flow Logs provide visibility into network traffic that traverses the VPC and can be used to detect anomalous traffic or insight during security workflows."
+              },
+              "properties": {
+                "precision": "very-high",
+                "security-severity": "5.5",
+                "tags": [
+                  "misconfiguration",
+                  "security",
+                  "MEDIUM"
+                ]
+              }
+            }
+          ],
+          "version": "0.53.0"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "AVD-AWS-0102",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "Artifact: github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf\nType: terraform\nVulnerability AVD-AWS-0102\nSeverity: CRITICAL\nMessage: Network ACL rule allows access using ALL ports.\nLink: [AVD-AWS-0102](https://avd.aquasec.com/misconfig/avd-aws-0102)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 521,
+                  "startColumn": 1,
+                  "endLine": 521,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AVD-AWS-0102",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "Artifact: github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf\nType: terraform\nVulnerability AVD-AWS-0102\nSeverity: CRITICAL\nMessage: Network ACL rule allows access using ALL ports.\nLink: [AVD-AWS-0102](https://avd.aquasec.com/misconfig/avd-aws-0102)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 504,
+                  "startColumn": 1,
+                  "endLine": 504,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AVD-AWS-0102",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "Artifact: github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf\nType: terraform\nVulnerability AVD-AWS-0102\nSeverity: CRITICAL\nMessage: Network ACL rule allows access using ALL ports.\nLink: [AVD-AWS-0102](https://avd.aquasec.com/misconfig/avd-aws-0102)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 339,
+                  "startColumn": 1,
+                  "endLine": 339,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AVD-AWS-0102",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "Artifact: github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf\nType: terraform\nVulnerability AVD-AWS-0102\nSeverity: CRITICAL\nMessage: Network ACL rule allows access using ALL ports.\nLink: [AVD-AWS-0102](https://avd.aquasec.com/misconfig/avd-aws-0102)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 322,
+                  "startColumn": 1,
+                  "endLine": 322,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AVD-AWS-0102",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "Artifact: github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf\nType: terraform\nVulnerability AVD-AWS-0102\nSeverity: CRITICAL\nMessage: Network ACL rule allows access using ALL ports.\nLink: [AVD-AWS-0102](https://avd.aquasec.com/misconfig/avd-aws-0102)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 220,
+                  "startColumn": 1,
+                  "endLine": 220,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AVD-AWS-0102",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "Artifact: github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf\nType: terraform\nVulnerability AVD-AWS-0102\nSeverity: CRITICAL\nMessage: Network ACL rule allows access using ALL ports.\nLink: [AVD-AWS-0102](https://avd.aquasec.com/misconfig/avd-aws-0102)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 203,
+                  "startColumn": 1,
+                  "endLine": 203,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AVD-AWS-0105",
+          "ruleIndex": 1,
+          "level": "error",
+          "message": {
+            "text": "Artifact: github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf\nType: terraform\nVulnerability AVD-AWS-0105\nSeverity: CRITICAL\nMessage: Network ACL rule allows ingress from public internet.\nLink: [AVD-AWS-0105](https://avd.aquasec.com/misconfig/avd-aws-0105)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 505,
+                  "startColumn": 1,
+                  "endLine": 505,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AVD-AWS-0105",
+          "ruleIndex": 1,
+          "level": "error",
+          "message": {
+            "text": "Artifact: github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf\nType: terraform\nVulnerability AVD-AWS-0105\nSeverity: CRITICAL\nMessage: Network ACL rule allows ingress from public internet.\nLink: [AVD-AWS-0105](https://avd.aquasec.com/misconfig/avd-aws-0105)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 323,
+                  "startColumn": 1,
+                  "endLine": 323,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AVD-AWS-0105",
+          "ruleIndex": 1,
+          "level": "error",
+          "message": {
+            "text": "Artifact: github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf\nType: terraform\nVulnerability AVD-AWS-0105\nSeverity: CRITICAL\nMessage: Network ACL rule allows ingress from public internet.\nLink: [AVD-AWS-0105](https://avd.aquasec.com/misconfig/avd-aws-0105)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 204,
+                  "startColumn": 1,
+                  "endLine": 204,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "AVD-AWS-0178",
+          "ruleIndex": 2,
+          "level": "warning",
+          "message": {
+            "text": "Artifact: github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf\nType: terraform\nVulnerability AVD-AWS-0178\nSeverity: MEDIUM\nMessage: VPC Flow Logs is not enabled for VPC\nLink: [AVD-AWS-0178](https://avd.aquasec.com/misconfig/avd-aws-0178)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf",
+                  "uriBaseId": "ROOTPATH"
+                },
+                "region": {
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 51,
+                  "endColumn": 1
+                }
+              },
+              "message": {
+                "text": "github.com/terraform-aws-modules/terraform-aws-vpc?ref=2e417ad0ce830893127476436179ef483485ae84/main.tf"
+              }
+            }
+          ]
+        }
+      ],
+      "columnKind": "utf16CodeUnits",
+      "originalUriBaseIds": {
+        "ROOTPATH": {
+          "uri": "file:///home/runner/work/sonar-terraform/sonar-terraform/"
+        }
+      }
+    }
+  ]
+}
+1s
