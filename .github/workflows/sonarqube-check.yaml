@@ -25,7 +25,7 @@ jobs:
 
       - name: Run SonarQube scan
         env:
-          SONAR_TOKEN: ${{ secrets.Sonar_token }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
         run: |
           $HOME/sonar-scanner-6.1.0.4477-linux-x64/bin/sonar-scanner \
