@@ -1,0 +1,36 @@
+name: Build
+
+on: [workflow_dispatch, schedule]
+  
+
+jobs:
+  build:
+    name: Build and analyze
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
+
+      - name: Clean workspace
+        run: git clean -fdx
+
+      - name: Install SonarScanner
+        run: |
+          curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.1.0.4477-linux-x64.zip
+          unzip sonar-scanner.zip -d $HOME
+          export PATH=$HOME/sonar-scanner-6.1.0.4477-linux-x64/bin:$PATH
+
+      - name: Run SonarQube scan
+        env:
+          SONAR_TOKEN: ${{ secrets.Sonar_token }}
+          SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
+        run: |
+          $HOME/sonar-scanner-6.1.0.4477-linux-x64/bin/sonar-scanner \
+            -Dsonar.projectKey=sonar-terraform3 \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=$SONAR_HOST_URL \
+            -Dsonar.login=$SONAR_TOKEN \
+            -X
